@@ -2,7 +2,7 @@ package com.example.myapplication.api
 
 import com.example.myapplication.model.Item
 import com.example.myapplication.utils.Constants.Companion.BASE_URL
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,15 +21,15 @@ object RetrofitInstance {
         retrofit.create(APIService::class.java)
     }
 
-    fun getATMs(): Observable<List<Item>> {
+    fun getATMs(): Single<List<Item>> {
         return api.getATMs()
     }
 
-    fun getBanks(): Observable<List<Item>> {
+    fun getBanks(): Single<List<Item>> {
         return api.getBanks()
     }
 
-    fun getKiosks(): Observable<List<Item>> {
+    fun getKiosks(): Single<List<Item>> {
         return api.getKiosks()
     }
 }
