@@ -1,12 +1,13 @@
 package com.example.myapplication.controllers
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.util.Log
 import com.example.myapplication.api.RetrofitInstance
 import com.example.myapplication.model.Item
 import com.example.myapplication.utils.Constants
 import com.example.myapplication.utils.Constants.Companion.ATM
 import com.example.myapplication.utils.Constants.Companion.BANK
-import com.example.myapplication.utils.Constants.Companion.ERROR
 import com.example.myapplication.utils.Constants.Companion.KIOSK
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory.*
@@ -21,7 +22,14 @@ import kotlin.math.sqrt
 
 class Controller {
 
-    fun addMarkers(map: GoogleMap, point: LatLng) {
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectivityManager.activeNetwork != null)
+            return true
+        return false
+    }
+
+    fun addMarkers(point: LatLng, map: GoogleMap) {
         val retrofit = RetrofitInstance
         Single.zip(retrofit.getATMs(), retrofit.getKiosks(), retrofit.getBanks(),
             { atms, kiosks, banks ->
@@ -34,13 +42,13 @@ class Controller {
                 list.sortedWith(
                     compareBy { sqrt((point.latitude - it.x).pow(2) + (point.longitude - it.y).pow(2)) })
             }
-            .flatMapObservable { items -> fromIterable(items) }
+            .flatMapObservable { elements -> fromIterable(elements) }
             .take(10)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { value -> addMarker(value, map) },
-                { error -> Log.e(ERROR, "$error") },
+                { error -> Log.e(Constants.ERROR, "$error") },
                 { Log.e(Constants.SUCCESS, " ") }
             )
     }
