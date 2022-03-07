@@ -59,7 +59,4 @@ dependencies {
 
     // Google services
     implementation 'com.google.android.gms:play-services-location:19.0.1'
-
-    // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
 }
